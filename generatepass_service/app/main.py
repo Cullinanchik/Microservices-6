@@ -82,7 +82,7 @@ async def passphrase(num_words: int = 4, db: Session = Depends(get_db)):
     return {"passphrase": generated_passphrase}
 
 @app.get("/health", status_code=status.HTTP_200_OK)
-async def health_check():
+async def generatepass_heath():
     return {"message": "Service is active"}
 
 if __name__ == "__main__":
