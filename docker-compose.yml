@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ilya
+      POSTGRES_PASSWORD: pavlov
+      POSTGRES_DB: Pavlovid
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+
+  user_service:
+    container_name: user_service
+    build: ./user_service/
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
+
+  roulette_service:
+    restart: on-failure
+    container_name: generatepass_service
+    build: ./generatepass_service/
+    ports:
+      - "8001:80"
+    depends_on:
+      - db
