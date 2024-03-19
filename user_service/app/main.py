@@ -53,9 +53,9 @@ async def add_doc(user: User, db: db_dependency):
         id=user.id,
         name=user.name,
         second_name=user.second_name,
-        age = user.age,
-        height = height.height,
-        weight = weight.weight
+        age=user.age,
+        height=user.height,
+        weight=user.weight
     )
     db.add(db_user)
     db.commit()
@@ -76,4 +76,3 @@ async def delete_doc(user_id: UUID, db: db_dependency):
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=int(os.getenv('PORT', 80)))
-
