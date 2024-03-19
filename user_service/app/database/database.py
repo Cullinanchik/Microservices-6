@@ -11,11 +11,11 @@ SessionLocal = sessionmaker(autoflush=False, bind=engine)
 Base = declarative_base()
 
 class User(Base):
-    __tablename__ = 'user_pavlov'
+    __tablename__ = 'users_pavlovid'
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     name = Column(String)
     second_name = Column(String)
-    weight = Column(int)
-    height = Column(int)
-    age = Column(int)
+    weight = Column(Integer)
+    height = Column(Integer)
+    age = Column(Integer)
