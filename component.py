@@ -15,11 +15,11 @@ generatepass_url = 'http://localhost:8001'
 
 user = {
     "id": "46063999-a964-43f5-9f14-4be62ec1d8b9",
-    "name": "Ilya",
-    "second_name": "Pavlov",
-    "weight": 70,
-    "height": 178,
-    "age": 22
+    "name": "Vladislav",
+    "second_name": "Suhanov",
+    "weight": 120,
+    "height": 187,
+    "age": 21
 }
 
 
