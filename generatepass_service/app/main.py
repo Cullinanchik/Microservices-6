@@ -83,7 +83,7 @@ async def passphrase(num_words: int = 4, db: Session = Depends(get_db)):
 
 @app.get("/health", status_code=status.HTTP_200_OK)
 async def generatepass_health():
-    return {"message": "Service is active"}
+    return {"message": "service is active"}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=int(os.getenv('PORT', 80)))
