@@ -26,20 +26,6 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 words_list = ["apple", "banana", "cherry", "date", "elderberry", "fig", "grape", "honeydew", "kiwi", "lemon", "mango", "nectarine", "orange", "papaya", "quince", "raspberry", "strawberry", "tangerine", "ugli", "vanilla", "watermelon", "xigua", "yam", "zucchini"]
 
-@app.post("/get_token")
-async def get_token(username: str = Form(...), password: str = Form(...)):
-    try:
-        # Получение токена
-        token = keycloak_openid.token(grant_type=["password"],
-                                      username=username,
-                                      password=password)
-        global user_token
-        user_token = token
-        return token
-    except Exception as e:
-        print(e)  # Логирование для диагностики
-        raise HTTPException(status_code=400, detail="Не удалось получить токен")
-
 
 def generate_password(length=12, use_special=True, use_numbers=True, use_uppercase=True):
     """
