@@ -6,7 +6,7 @@ import unittest
 
 pet_url = 'http://localhost:8000'
 get_pets_url = f'{pet_url}/get_pets'
-add_pets_url = f'{pet_url}/add_pet'
+add_pet_url = f'{pet_url}/add_pet'
 get_pet_by_id_url = f'{pet_url}/get_pet_by_id/'
 delete_pet_url = f'{pet_url}/delete_pet'
 
@@ -20,7 +20,6 @@ pet = {
     "weight": 20,
     "age": 5,
     "favorite_activity": "Sleep"
-
 }
 
 
@@ -31,7 +30,7 @@ class TestComponent(unittest.TestCase):
         self.assertTrue(res != None)
 
     def test_2_add_pet(self):
-        res = requests.post(f"{add_pets_url}", json=pet)
+        res = requests.post(f"{add_pet_url}", json=pet)
         self.assertEqual(res.status_code, 200)
 
     def test_3_get_pet_by_id(self):
