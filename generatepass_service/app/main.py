@@ -1,11 +1,11 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Form
 from sqlalchemy.orm import Session
 from uuid import UUID
 from typing import Annotated
 import uvicorn
 import os
 from database import database as database
-from model.model import GeneratedPassword
+from model.model import Password
 from typing import List
 import string
 import random
@@ -23,7 +23,22 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
+
 words_list = ["apple", "banana", "cherry", "date", "elderberry", "fig", "grape", "honeydew", "kiwi", "lemon", "mango", "nectarine", "orange", "papaya", "quince", "raspberry", "strawberry", "tangerine", "ugli", "vanilla", "watermelon", "xigua", "yam", "zucchini"]
+
+@app.post("/get_token")
+async def get_token(username: str = Form(...), password: str = Form(...)):
+    try:
+        # Получение токена
+        token = keycloak_openid.token(grant_type=["password"],
+                                      username=username,
+                                      password=password)
+        global user_token
+        user_token = token
+        return token
+    except Exception as e:
+        print(e)  # Логирование для диагностики
+        raise HTTPException(status_code=400, detail="Не удалось получить токен")
 
 
 def generate_password(length=12, use_special=True, use_numbers=True, use_uppercase=True):
@@ -66,7 +81,7 @@ async def password(length: int = 12, use_special: bool = False, use_numbers: boo
     if length < 6 or length > 128:
         raise HTTPException(status_code=400, detail="Length should be between 6 and 128 characters")
     generated_password = generate_password(length, use_special, use_numbers, use_uppercase)
-    db_password = GeneratedPassword(password=generated_password, password_type="password")
+    db_password = database.Password(password=generated_password, password_type="password")
     db.add(db_password)
     db.commit()
     return {"password": generated_password}
@@ -76,10 +91,15 @@ async def passphrase(num_words: int = 4, db: Session = Depends(get_db)):
     if num_words < 1 or num_words > 10:
         raise HTTPException(status_code=400, detail="Number of words should be between 1 and 10")
     generated_passphrase = generate_passphrase(num_words)
-    db_passphrase = GeneratedPassword(password=generated_passphrase, password_type="passphrase")
+    db_passphrase = database.Password(password=generated_passphrase, password_type="passphrase")
     db.add(db_passphrase)
     db.commit()
     return {"passphrase": generated_passphrase}
+
+@app.get("/get_passwords")
+async def get_passwords(db: db_dependency):
+    result = db.query(database.Password).offset(0).limit(100).all()
+    return result
 
 @app.get("/health", status_code=status.HTTP_200_OK)
 async def generatepass_health():

@@ -11,10 +11,10 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
 
 sys.path.append(str(BASE_DIR / 'generatepass_service/app'))
-sys.path.append(str(BASE_DIR / 'user_service/app'))
+sys.path.append(str(BASE_DIR / 'pets_service/app'))
 
 from generatepass_service.app.main import generatepass_health as health_generatepass
-from user_service.app.main import user_health as health_user
+from pets_service.app.main import pet_health as helath_pets
 
 def check_connect():
     try:
@@ -42,8 +42,8 @@ class TestIntegration(unittest.TestCase):
         r = asyncio.run(health_generatepass())
         self.assertEqual(r, {'message': 'service is active'})
 
-    def test_user_service_connection(self):
-        r = asyncio.run(health_user())
+    def test_pets_service_connection(self):
+        r = asyncio.run(helath_pets())
         self.assertEqual(r, {'message': 'service is active'})
 
 

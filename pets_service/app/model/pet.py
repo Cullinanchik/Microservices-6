@@ -3,7 +3,10 @@ from typing import Optional
 from uuid import UUID, uuid4
 
 
-class Password(BaseModel):
+class Pet(BaseModel):
     id: Optional[UUID] = uuid4()
-    password: str
-    password_type: str
+    name: str
+    favorite_delicacy: str
+    weight: int
+    age: int
+    favorite_activity: str

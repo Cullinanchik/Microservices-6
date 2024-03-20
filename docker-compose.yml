@@ -14,9 +14,9 @@ services:
       - "5432:5432"
 
 
-  user_service:
-    container_name: user_service
-    build: ./user_service/
+  pets_service:
+    container_name: pets_service
+    build: ./pets_service/
     ports:
       - "8000:80"
     depends_on:
