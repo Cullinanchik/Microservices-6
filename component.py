@@ -4,41 +4,42 @@ from datetime import datetime
 import unittest
 
 
-user_url = 'http://localhost:8000'
-get_users_url = f'{user_url}/get_users'
-add_user_url = f'{user_url}/add_user'
-get_user_by_id_url = f'{user_url}/get_user_by_id/'
-delete_user_url = f'{user_url}/delete_user'
+pet_url = 'http://localhost:8000'
+get_pets_url = f'{pet_url}/get_pets'
+add_pets_url = f'{pet_url}/add_pet'
+get_pet_by_id_url = f'{pet_url}/get_pet_by_id/'
+delete_pet_url = f'{pet_url}/delete_pet'
 
 generatepass_url = 'http://localhost:8001'
 
 
-user = {
-    "id": "46063999-a964-43f5-9f14-4be62ec1d8b9",
-    "name": "Vladislav",
-    "second_name": "Suhanov",
-    "weight": 120,
-    "height": 187,
-    "age": 21
+pet = {
+    "id": "945949ce-4aaa-49f0-a13c-f8ae7a19df44",
+    "name": "Bessi",
+    "favorite_delicacy": "Carrot",
+    "weight": 20,
+    "age": 5,
+    "favorite_activity": "Sleep"
+
 }
 
 
 class TestComponent(unittest.TestCase):
 
-    def test_1_get_users(self):
-        res = requests.get(f"{get_users_url}")
+    def test_1_get_pets(self):
+        res = requests.get(f"{get_pets_url}")
         self.assertTrue(res != None)
 
-    def test_2_add_user(self):
-        res = requests.post(f"{add_user_url}", json=user)
+    def test_2_add_pet(self):
+        res = requests.post(f"{add_pets_url}", json=pet)
         self.assertEqual(res.status_code, 200)
 
-    def test_3_get_user_by_id(self):
-        res = requests.get(f"{get_user_by_id_url}?user_id={user['id']}").json()
-        self.assertTrue(res, user)
+    def test_3_get_pet_by_id(self):
+        res = requests.get(f"{get_pet_by_id_url}?pet_id={pet['id']}").json()
+        self.assertTrue(res, pet)
 
-    def test_4_delete_user(self):
-        res = requests.delete(f"{delete_user_url}?user_id={user['id']}").json()
+    def test_4_delete_pet(self):
+        res = requests.delete(f"{delete_pet_url}?pet_id={pet['id']}").json()
         self.assertEqual(res, "Success")
 
 if __name__ == '__main__':

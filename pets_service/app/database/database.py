@@ -10,12 +10,12 @@ SessionLocal = sessionmaker(autoflush=False, bind=engine)
 
 Base = declarative_base()
 
-class User(Base):
-    __tablename__ = 'users_pavlovid'
+class Pet(Base):
+    __tablename__ = 'pets_pavlovid'
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     name = Column(String)
-    second_name = Column(String)
+    favorite_delicacy = Column(String)
     weight = Column(Integer)
-    height = Column(Integer)
     age = Column(Integer)
+    favorite_activity = Column(String)

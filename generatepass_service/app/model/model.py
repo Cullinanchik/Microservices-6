@@ -1,10 +1,9 @@
-from sqlalchemy import Column, Integer, String, DateTime, func
-from database.database import Base
+from pydantic import BaseModel
+from typing import Optional
+from uuid import UUID, uuid4
 
-class GeneratedPassword(Base):
-    __tablename__ = 'generated_passwords'
 
-    id = Column(Integer, primary_key=True, index=True)
-    password = Column(String, nullable=False)
-    password_type = Column(String, nullable=False)  # 'password' or 'passphrase'
-    created_at = Column(DateTime, default=func.now())
+class Password(BaseModel):
+    id: Optional[UUID] = uuid4()
+    password: str
+    password_type: str
