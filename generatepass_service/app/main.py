@@ -31,9 +31,9 @@ words_list = ["apple", "banana", "cherry", "date", "elderberry", "fig", "grape",
 
 # Данные для подключения к Keycloak
 KEYCLOAK_URL = "http://keycloak:8080/"
-KEYCLOAK_CLIENT_ID = "pavlovid"
-KEYCLOAK_REALM = "myRealm"
-KEYCLOAK_CLIENT_SECRET = "zXkxCT1zhllUO1t6KqPC8qREQKklFNMM"
+KEYCLOAK_CLIENT_ID = "testClient"
+KEYCLOAK_REALM = "testRealm"
+KEYCLOAK_CLIENT_SECRET = "**********"
 
 user_token = ""
 keycloak_openid = KeycloakOpenID(server_url=KEYCLOAK_URL,
@@ -59,10 +59,10 @@ def check_user_roles():
     global user_token
     token = user_token
     try:
-        userinfo = keycloak_openid.userinfo(token["access_token"])
         token_info = keycloak_openid.introspect(token["access_token"])
-        if "myRole" not in token_info["realm_access"]["roles"]:
+        if "test" not in token_info["realm_access"]["roles"]:
             raise HTTPException(status_code=403, detail="Access denied")
+        user_token = ''
         return token_info
     except Exception as e:
         raise HTTPException(status_code=401, detail="Invalid token or access denied")
@@ -104,32 +104,44 @@ def generate_passphrase(num_words=4):
 
 @app.get("/generate-password")
 async def password(length: int = 12, use_special: bool = False, use_numbers: bool = True, use_uppercase: bool = True, db: Session = Depends(get_db)):
-    if length < 6 or length > 128:
-        raise HTTPException(status_code=400, detail="Length should be between 6 and 128 characters")
-    generated_password = generate_password(length, use_special, use_numbers, use_uppercase)
-    db_password = database.Password(password=generated_password, password_type="password")
-    db.add(db_password)
-    db.commit()
-    return {"password": generated_password}
+    if (check_user_roles()):
+        if length < 6 or length > 128:
+            raise HTTPException(status_code=400, detail="Length should be between 6 and 128 characters")
+        generated_password = generate_password(length, use_special, use_numbers, use_uppercase)
+        db_password = database.Password(password=generated_password, password_type="password")
+        db.add(db_password)
+        db.commit()
+        return {"password": generated_password}
+    else:
+        return "Wrong JWT Token"
 
 @app.get("/generate-passphrase")
 async def passphrase(num_words: int = 4, db: Session = Depends(get_db)):
-    if num_words < 1 or num_words > 10:
-        raise HTTPException(status_code=400, detail="Number of words should be between 1 and 10")
-    generated_passphrase = generate_passphrase(num_words)
-    db_passphrase = database.Password(password=generated_passphrase, password_type="passphrase")
-    db.add(db_passphrase)
-    db.commit()
-    return {"passphrase": generated_passphrase}
+    if (check_user_roles()):
+        if num_words < 1 or num_words > 10:
+            raise HTTPException(status_code=400, detail="Number of words should be between 1 and 10")
+        generated_passphrase = generate_passphrase(num_words)
+        db_passphrase = database.Password(password=generated_passphrase, password_type="passphrase")
+        db.add(db_passphrase)
+        db.commit()
+        return {"passphrase": generated_passphrase}
+    else:
+        return "Wrong JWT Token"
 
 @app.get("/get_passwords")
 async def get_passwords(db: db_dependency):
-    result = db.query(database.Password).offset(0).limit(100).all()
-    return result
+    if (check_user_roles()):
+        result = db.query(database.Password).offset(0).limit(100).all()
+        return result
+    else: 
+        return "Wrong JWT Token"
 
 @app.get("/health", status_code=status.HTTP_200_OK)
 async def generatepass_health():
-    return {"message": "service is active"}
+    if (check_user_roles()):
+        return {'message': 'service is active'}
+    else:
+        return "Wrong JWT Token"
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=int(os.getenv('PORT', 80)))
